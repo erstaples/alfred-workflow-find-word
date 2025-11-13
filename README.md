@@ -16,8 +16,7 @@ A reverse dictionary Alfred workflow powered by Claude AI. Find words based on t
 ### 1. Clone or Download
 
 ```bash
-cd ~/code/misc
-git clone https://github.com/yourusername/find-word-alfred-plugin.git
+git clone https://github.com/erstaples/alfred-workflow-find-word.git
 # or download and extract the zip
 ```
 
@@ -32,7 +31,7 @@ pip3 install anthropic
 Build the workflow package and install it:
 
 ```bash
-cd find-word-alfred-plugin
+cd alfred-workflow-find-word
 make install
 ```
 
