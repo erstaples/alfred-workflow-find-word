@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.estaples.alfred.findword</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>2E7F9F4A-8B3D-4C5E-9A1B-3D4E5F6A7B8C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F1E2D3C-4B5A-6C7D-8E9F-0A1B2C3D4E5F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+		<key>5A6B7C8D-9E0F-1A2B-3C4D-5E6F7A8B9C0D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8F1E2D3C-4B5A-6C7D-8E9F-0A1B2C3D4E5F</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>estaples</string>
+	<key>description</key>
+	<string>Find words by their meaning or description using Claude AI</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Find Word</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>find-word</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching for words...</string>
+				<key>script</key>
+				<string>/usr/bin/python3 find_word.py "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Find words by their meaning or description</string>
+				<key>title</key>
+				<string>Find Word</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>2E7F9F4A-8B3D-4C5E-9A1B-3D4E5F6A7B8C</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>find-word-lit</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Searching for literary words...</string>
+				<key>script</key>
+				<string>/usr/bin/python3 find_word.py --literary "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Find literary/flowery words by their meaning</string>
+				<key>title</key>
+				<string>Find Literary Word</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>5A6B7C8D-9E0F-1A2B-3C4D-5E6F7A8B9C0D</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>8F1E2D3C-4B5A-6C7D-8E9F-0A1B2C3D4E5F</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Find Word - Reverse Dictionary using Claude AI
+
+This workflow helps you find words based on their meanings or descriptions.
+
+Usage:
+- find-word &lt;description&gt;
+  Find words matching the description
+- find-word-lit &lt;description&gt;
+  Find literary/flowery words
+
+Setup:
+1. Install anthropic package: pip3 install anthropic
+
+2. Get API key from console.anthropic.com
+
+3. Click [x] button (Configure Workflow) to set environment variables
+   ANTHROPIC_API_KEY: your_api_key_here
+   CLAUDE_MODEL: claude-haiku-4-5-20251001 (optional, default)
+
+Examples:
+- find-word to make unnecessary
+  Returns: "obviate", "preclude", etc.
+- find-word-lit sad
+  Returns: "melancholy", "wistful", "forlorn", etc.</string>
+	<key>uidata</key>
+	<dict>
+		<key>2E7F9F4A-8B3D-4C5E-9A1B-3D4E5F6A7B8C</key>
+		<dict>
+			<key>xpos</key>
+			<integer>40</integer>
+			<key>ypos</key>
+			<integer>40</integer>
+		</dict>
+		<key>5A6B7C8D-9E0F-1A2B-3C4D-5E6F7A8B9C0D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>40</integer>
+			<key>ypos</key>
+			<integer>180</integer>
+		</dict>
+		<key>8F1E2D3C-4B5A-6C7D-8E9F-0A1B2C3D4E5F</key>
+		<dict>
+			<key>xpos</key>
+			<integer>340</integer>
+			<key>ypos</key>
+			<integer>110</integer>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string>https://github.com/estaples/find-word-alfred-plugin</string>
+</dict>
+</plist>
