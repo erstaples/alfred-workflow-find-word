@@ -2,8 +2,6 @@
 
 A reverse dictionary Alfred workflow powered by Claude AI. Find words based on their meanings or descriptions, with optional literary mode for more sophisticated vocabulary.
 
-<img src="https://via.placeholder.com/512x512.png?text=Find+Word" width="128" alt="Find Word Icon">
-
 ## Features
 
 - **Reverse Dictionary Lookup**: Describe what you mean, get word suggestions
