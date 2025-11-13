@@ -42,13 +42,28 @@ def query_claude(description: str, literary: bool = False) -> List[Dict[str, str
 
     system_prompt = f"""You are a reverse dictionary assistant. Given a description or meaning, suggest words that match it.{literary_instruction}
 
-Return your response as a JSON array of objects, each with 'word' and 'definition' fields.
-The definition should be concise (1-2 sentences) and include the part of speech in brackets.
+Return your response as a JSON array of objects with these fields:
+- word: the suggested word
+- definition: concise definition (1-2 sentences)
+- part_of_speech: one of "noun", "verb", "adjective", "adverb", "preposition", "conjunction", "interjection"
+- frequency: number 1-10 (10=very common, 1=very rare)
+- origin: language of origin (e.g., "Latin", "Greek", "French", "Germanic", "Arabic")
+- etymology: brief etymology (1 sentence, how the word came to be)
+- synonyms: array of 2-4 related words with similar meaning
+- antonyms: array of 1-3 words with opposite meaning (or empty array if none)
 
 Example format:
 [
-  {{"word": "obviate", "definition": "[verb] To remove or prevent (a need or difficulty); make unnecessary."}},
-  {{"word": "preclude", "definition": "[verb] To prevent from happening; make impossible."}}
+  {{
+    "word": "obviate",
+    "definition": "To remove or prevent (a need or difficulty); make unnecessary.",
+    "part_of_speech": "verb",
+    "frequency": 3,
+    "origin": "Latin",
+    "etymology": "From Latin 'obviatus', meaning 'to meet or counter'.",
+    "synonyms": ["preclude", "prevent", "avert", "forestall"],
+    "antonyms": ["necessitate", "require"]
+  }}
 ]
 
 Provide 5-10 words ranked by relevance."""
@@ -61,7 +76,7 @@ Provide 5-10 words ranked by relevance."""
 
         message = client.messages.create(
             model=model,
-            max_tokens=1024,
+            max_tokens=2048,
             messages=[{
                 "role": "user",
                 "content": description
@@ -103,13 +118,54 @@ Provide 5-10 words ranked by relevance."""
         }]
 
 
-def create_alfred_items(words: List[Dict[str, str]], query: str) -> List[Dict[str, Any]]:
+def get_pos_abbreviation(part_of_speech: str) -> str:
+    """Get clear text abbreviation for part of speech."""
+    abbreviations = {
+        'noun': 'n',
+        'verb': 'v',
+        'adjective': 'adj',
+        'adverb': 'adv',
+        'preposition': 'prep',
+        'conjunction': 'conj',
+        'interjection': 'interj',
+        'pronoun': 'pron'
+    }
+    abbr = abbreviations.get(part_of_speech.lower(), part_of_speech[:4])
+    return f"({abbr})"
+
+
+def get_origin_flag(origin: str) -> str:
+    """Get flag emoji for word origin."""
+    origin_lower = origin.lower()
+    flags = {
+        'latin': '🇻🇦',
+        'greek': '🇬🇷',
+        'french': '🇫🇷',
+        'germanic': '🇩🇪',
+        'german': '🇩🇪',
+        'arabic': '🇸🇦',
+        'spanish': '🇪🇸',
+        'italian': '🇮🇹',
+        'portuguese': '🇵🇹',
+        'russian': '🇷🇺',
+        'chinese': '🇨🇳',
+        'japanese': '🇯🇵',
+        'old english': '🇬🇧',
+        'english': '🇬🇧',
+        'dutch': '🇳🇱',
+        'sanskrit': '🇮🇳',
+        'hebrew': '🇮🇱',
+        'persian': '🇮🇷'
+    }
+    return flags.get(origin_lower, '🌍')
+
+
+def create_alfred_items(words: List[Dict[str, str]]) -> List[Dict[str, Any]]:
     """
     Convert word results to Alfred Script Filter JSON format.
 
     Args:
-        words: List of word objects with 'word' and 'definition' keys
-        query: Original search query
+        words: List of word objects with enhanced metadata
 
     Returns:
         List of Alfred item objects
@@ -119,17 +175,55 @@ def create_alfred_items(words: List[Dict[str, str]], query: str) -> List[Dict[st
     for idx, word_obj in enumerate(words):
         word = word_obj.get('word', '')
         definition = word_obj.get('definition', 'No definition available')
+        part_of_speech = word_obj.get('part_of_speech', '')
+        frequency = word_obj.get('frequency', 5)
+        origin = word_obj.get('origin', 'Unknown')
+        etymology = word_obj.get('etymology', '')
+        synonyms = word_obj.get('synonyms', [])
+        antonyms = word_obj.get('antonyms', [])
+
+        # Build enhanced title with POS abbreviation and subtle frequency bar
+        pos_abbr = get_pos_abbreviation(part_of_speech)
+        # Use subtle dots for frequency (filled vs empty)
+        freq_bars = '●' * min(frequency, 10)
+        freq_bars += '○' * (10 - min(frequency, 10))
+        title = f"{pos_abbr} {word}  {freq_bars}"
+
+        # Build enhanced subtitle with just the definition
+        subtitle = definition
+
+        # Get origin flag for etymology view
+        origin_flag = get_origin_flag(origin)
+
+        # Format synonyms and antonyms for modifiers
+        synonyms_text = ", ".join(synonyms) if synonyms else "No synonyms available"
+        antonyms_text = ", ".join(antonyms) if antonyms else "No antonyms available"
+
+        # Format etymology with origin
+        etymology_text = f"{origin_flag} {origin} • {etymology}" if etymology else f"{origin_flag} {origin}"
 
         item = {
             'uid': f"find-word-{word}-{idx}",
-            'title': word,
-            'subtitle': definition,
+            'title': title,
+            'subtitle': subtitle,
             'arg': word,
             'autocomplete': word,
             'valid': True,
             'text': {
                 'copy': word,
                 'largetype': f"{word}\n\n{definition}"
+            },
+            'mods': {
+                'shift': {
+                    'valid': True,
+                    'arg': word,
+                    'subtitle': f"Synonyms: {synonyms_text} | Antonyms: {antonyms_text}"
+                },
+                'ctrl': {
+                    'valid': True,
+                    'arg': word,
+                    'subtitle': etymology_text
+                }
             }
         }
 
@@ -169,7 +263,7 @@ def main():
         words = query_claude(query, literary=literary)
 
         if words:
-            items = create_alfred_items(words, query)
+            items = create_alfred_items(words)
             output = {'items': items}
         else:
             output = {

@@ -2,12 +2,34 @@
 
 A reverse dictionary Alfred workflow powered by Claude AI. Find words based on their meanings or descriptions, with optional literary mode for more sophisticated vocabulary.
 
+## Screenshots
+
+### Regular Mode
+Search for words by describing their meaning:
+
+![find-word example](assets/find-word-example.png)
+
+### Literary Mode
+Get more sophisticated, eloquent vocabulary:
+
+![find-word-lit example](assets/find-word-lit-example.png)
+
 ## Features
 
+### Core Functionality
 - **Reverse Dictionary Lookup**: Describe what you mean, get word suggestions
 - **Literary Mode**: Get more sophisticated, eloquent word suggestions
 - **Smart Definitions**: Each word comes with a concise definition
 - **Fast Results**: Powered by Claude AI for intelligent matching
+
+### Visual Enhancements
+- **Part of Speech Labels**: Clear abbreviations (n) noun, (v) verb, (adj) adjective, (adv) adverb
+- **Usage Frequency Indicator**: Subtle dots (●●●●○○○○○○) showing how commonly used (1-10 scale)
+- **Word Origin Flags**: 🇻🇦 Latin, 🇬🇷 Greek, 🇫🇷 French, 🇩🇪 Germanic (shown in etymology view)
+
+### Interactive Modifiers
+- **Shift + Enter**: View synonyms and antonyms for the selected word
+- **Ctrl + Enter**: View etymology and word origin history
 
 ## Installation
 
@@ -77,6 +99,34 @@ Returns: `obviate`, `preclude`, `eliminate`, etc.
 find-word-lit sad
 ```
 Returns: `melancholy`, `wistful`, `forlorn`, `plaintive`, etc.
+
+### Using Modifiers
+
+When viewing results, you can use modifier keys to see additional information:
+
+- **Hold Shift**: Shows synonyms and antonyms for the word
+- **Hold Ctrl**: Shows etymology and word origin history
+
+Simply hold the modifier key and press Enter to copy the word to your clipboard.
+
+## Visual Guide
+
+Each result shows:
+- **Title Line**: Part of speech + word + frequency indicator
+  - Abbreviation shows grammatical role: (n) (v) (adj) (adv) (prep) etc.
+  - Dots show frequency (●●●●○○○○○○ = 4/10, moderately rare)
+- **Subtitle Line**: Clean definition without clutter
+  - Full definition text with maximum space
+
+Example result:
+```
+(v) obviate  ●●●○○○○○○○
+To remove or prevent (a need or difficulty); make unnecessary.
+```
+
+Hold **Ctrl** to see: `🇻🇦 Latin • Etymology and word origin details`
+
+This clean layout maximizes definition space while keeping essential info visible.
 
 ## Examples
 
@@ -154,23 +204,78 @@ Edit `info.plist` and change the `<key>keyword</key>` values under each script f
 
 ## Development
 
-### Building the Workflow
+### Quick Start for Development
 
-The project includes a Makefile for easy workflow management:
+For development, you can automatically inject your API key into builds without committing it:
+
+1. **Create your environment file**:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit `.env` with your API key**:
+   ```bash
+   # .env
+   ANTHROPIC_API_KEY=sk-ant-...your-key-here
+   CLAUDE_MODEL=claude-haiku-4-5-20251001
+   ```
+
+3. **Build and install with development environment**:
+   ```bash
+   make install-dev
+   ```
+
+This will automatically inject your API key into the workflow, so you don't have to manually configure it in Alfred's UI each time you rebuild.
+
+### Makefile Commands
 
 ```bash
-make build    # Build the workflow package
-make clean    # Remove the workflow package
-make install  # Build and open for installation
-make help     # Show available commands
+make build        # Build the workflow package (production)
+make build-dev    # Build dev version with injected API key from .env
+make clean        # Remove all workflow packages
+make install      # Build and open for installation
+make install-dev  # Build dev version and install
+make help         # Show available commands
+```
+
+**Note:** The dev build creates `Find Word-dev.alfredworkflow` which contains your API key and is automatically gitignored, so you can't accidentally commit it.
+
+### Development Workflow
+
+1. Make changes to `find_word.py`
+2. Run `make install-dev` to rebuild and install
+3. Test in Alfred
+4. Repeat
+
+The `.env` file is gitignored, so your API key is never committed.
+
+### Project Structure
+
+```
+find-word-alfred-plugin/
+├── assets/                        # Screenshots and documentation images
+│   ├── find-word-example.png
+│   └── find-word-lit-example.png
+├── find_word.py                  # Main workflow script
+├── info.plist                    # Alfred workflow configuration
+├── icon.png                      # Workflow icon
+├── inject_env.py                 # Development tool for API key injection
+├── requirements.txt              # Python dependencies
+├── Makefile                      # Build automation
+├── .env.example                  # Environment variables template
+├── Find Word.alfredworkflow      # Production build (tracked in git)
+├── Find Word-dev.alfredworkflow  # Dev build with API key (gitignored)
+└── README.md                     # This file
 ```
 
 ## Cost Considerations
 
 This workflow uses the Claude API, which is paid:
-- Each query with Claude Haiku 4.5 (default) costs approximately $0.0001-0.0003
-- For better quality results, use Claude 3.5 Sonnet (~$0.001-0.003 per query)
-- The default Haiku model provides great results at minimal cost
+- Each query with Claude Haiku 4.5 (default) costs approximately $0.0002-0.0005
+- The enhanced features (etymology, synonyms, etc.) use ~2x tokens compared to basic lookup
+- For even better quality results, use Claude 3.5 Sonnet (~$0.002-0.006 per query)
+- The default Haiku model provides excellent results at minimal cost
+- Typical usage: 100 queries ≈ $0.02-0.05 with Haiku
 
 ## Contributing
 

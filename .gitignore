@@ -17,6 +17,8 @@ Icon
 
 # Alfred
 prefs.plist
+*.plist.backup
+*-dev.alfredworkflow
 
 # API Keys
 .env
